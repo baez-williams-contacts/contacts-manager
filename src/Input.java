@@ -25,4 +25,14 @@ public class Input {
             return getInt();
         }
     }
+
+    public int getInt(int min, int max) {
+        int userInput = getInt();
+        if (userInput >= min && userInput <= max) {
+            return userInput;
+        } else {
+            System.out.println("Please enter an integer between the numbers shown above.");
+            return getInt(min, max);
+        }
+    }
 }
