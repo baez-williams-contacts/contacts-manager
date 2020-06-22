@@ -73,5 +73,17 @@ public class ContactsApp {
 
     }
 
+    public static void searchContact() {
+        Path contactPath = Paths.get("contacts.txt");
+        //ask string
+        Input userInput = new Input();
+
+        //loop through exact: .getName.equals(userInput) / (.getPhoneNumber)
+        //startswith || contains!(boolean if true delete that contact at that index)
+            //if either true, return that index
+        //if find
+        //then print
+    }
+
 
 }
