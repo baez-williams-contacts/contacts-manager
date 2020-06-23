@@ -8,8 +8,7 @@ import java.util.List;
 
 public class ContactsApp {
     public static void main(String[] args) {
-//        doContacts();
-        deleteContact();
+        doContacts();
     }
 
     public static int userChoice() {
