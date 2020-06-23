@@ -8,7 +8,8 @@ import java.util.List;
 
 public class ContactsApp {
     public static void main(String[] args) {
-        doContacts();
+//        doContacts();
+        deleteContact();
     }
 
     public static int userChoice() {
@@ -26,11 +27,11 @@ public class ContactsApp {
         Path contactPath = Paths.get("contacts.txt");
         try {
             List<String> contactListAll = Files.readAllLines(contactPath);
-            System.out.printf("Name");
-        for (int i = 0; i < contactListAll.size(); i += 1) {
-            System.out.println((i + 1) + ": " + contactListAll.get(i));
-        }
-
+            System.out.printf("%-17s | %-17s |\n---------------------------------------\n", "Name", "Phone Number");
+            for (String contact : contactListAll) {
+                String[] contactArr = contact.split(" \\| ", 2);
+                System.out.printf("%-17s | %-17s |\n", contactArr[0], contactArr[1]);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Contact {
     private String name;
-    private int phoneNumber;
+    private String phoneNumber;
 
     public String getName() {
         return name;
@@ -13,15 +13,18 @@ public class Contact {
         this.name = name;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public Contact(String name, int phoneNumber) {
+    public Contact() {
+    }
+
+    public Contact(String name, String phoneNumber) {
         this.name = name;
         this.phoneNumber = phoneNumber;
     }
@@ -35,11 +38,11 @@ public class Contact {
         return contactInfo;
     }
 
-    public static List<Contact> nameStringsToContacts(List<String> contactInfo) {
+    public static List<Contact> nameStringsToContacts(List<String> contactInfo) throws NumberFormatException {
         List<Contact> contactObj = new ArrayList<>();
         for (String contact : contactInfo) {
-            String[] contactArr = contact.split("|", 2);
-            contactObj.add(new Contact(contactArr[0], Integer.parseInt(contactArr[1])));
+            String[] contactArr = contact.split(" \\| ", 2);
+            contactObj.add(new Contact(contactArr[0], contactArr[1]));
         }
         return contactObj;
     }
