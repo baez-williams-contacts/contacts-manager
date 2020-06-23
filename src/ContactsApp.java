@@ -50,7 +50,6 @@ public class ContactsApp {
             for (int i = 0; i < contactListAll.size(); i++){
                 String[] contactArr = contactListAll.get(i).split(" \\| ", 2);
                 if (nameInput.equalsIgnoreCase(contactArr[0])) {
-
                     System.out.println("There is already a contact named " + nameInput + ". Do you want to overwrite it? yes/no");
                     boolean overwriteContact = userInput.yesNo();
                     if (overwriteContact){
@@ -58,9 +57,8 @@ public class ContactsApp {
                         Files.write(contactPath, contactListAll);
                         break;
                     }
-                } else {
-            Files.write(contactPath, Arrays.asList(contactFormat), StandardOpenOption.APPEND);
-                break;
+                } else if (!contactListAll.get(i).equalsIgnoreCase(contactFormat)){
+                    Files.write(contactPath, Arrays.asList(contactFormat), StandardOpenOption.APPEND);
                 }
             }
 
