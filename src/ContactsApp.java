@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ContactsApp {
     public static void main(String[] args) {
-        deleteContact();
+        doContacts();
     }
 
     public static int userChoice() {
@@ -26,10 +26,11 @@ public class ContactsApp {
         Path contactPath = Paths.get("contacts.txt");
         try {
             List<String> contactListAll = Files.readAllLines(contactPath);
-        for (int i = 0; i < contactListAll.size(); i += 1) {
-            System.out.println((i + 1) + ": " + contactListAll.get(i));
-        }
-
+            System.out.printf("%-17s | %-17s |\n---------------------------------------\n", "Name", "Phone Number");
+            for (String contact : contactListAll) {
+                String[] contactArr = contact.split(" \\| ", 2);
+                System.out.printf("%-17s | %-17s |\n", contactArr[0], contactArr[1]);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +44,7 @@ public class ContactsApp {
         System.out.println("Please enter contact phone number(no dashes): ");
         String numberInput = userInput.getString();
 
-        String contactFormat = nameInput + "|" + numberInput;
+        String contactFormat = nameInput + " | " + numberInput;
         Path contactPath = Paths.get("contacts.txt");
         try {
             Files.write(contactPath, Arrays.asList(contactFormat), StandardOpenOption.APPEND);
@@ -56,8 +57,10 @@ public class ContactsApp {
         Path contactPath = Paths.get("contacts.txt");
         try {
             List<String> contactListAll = Files.readAllLines(contactPath);
+            System.out.printf("%-20s | %-17s |\n------------------------------------------\n", "Name", "Phone Number");
             for (int i = 0; i < contactListAll.size(); i += 1) {
-                System.out.println((i + 1) + ": " + contactListAll.get(i));
+                String[] contactArr = contactListAll.get(i).split(" \\| ", 2);
+                System.out.printf("%d: %-17s | %-17s |\n", i + 1, contactArr[0], contactArr[1]);
             }
             System.out.println("Please enter integer: ");
             Input userInput = new Input();
@@ -74,16 +77,45 @@ public class ContactsApp {
     }
 
     public static void searchContact() {
-        Path contactPath = Paths.get("contacts.txt");
-        //ask string
         Input userInput = new Input();
-
-        //loop through exact: .getName.equals(userInput) / (.getPhoneNumber)
-        //startswith || contains!(boolean if true delete that contact at that index)
-            //if either true, return that index
-        //if find
-        //then print
+        Path contactPath = Paths.get("contacts.txt");
+        System.out.println("Please enter the name of the contact you'd like to search for:");
+        String searchInput = userInput.getString();
+        List<String> contactListAll = null;
+        try {
+            contactListAll = Files.readAllLines(contactPath);
+            for (String s : contactListAll) {
+                if (s.toUpperCase().startsWith(searchInput.toUpperCase())) {
+                    System.out.println("Here's the contact you searched for: " + s);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    public static boolean yesNo() {
+        System.out.println("Would you like to select another option?");
+        Input userInput = new Input();
+        return userInput.yesNo();
+    }
 
+    public static void doContacts() {
+        int userInput;
+        do {
+            userInput = userChoice();
+            if (userInput == 1) {
+                viewAll();
+            } else if (userInput == 2) {
+                addContact();
+            } else if (userInput == 3) {
+                searchContact();
+            } else if (userInput == 4) {
+                deleteContact();
+            } else if (userInput == 5) {
+                System.out.println("Thanks for using the app.");
+                break;
+            }
+        } while (yesNo());
+    }
 }
