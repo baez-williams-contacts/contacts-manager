@@ -58,8 +58,10 @@ public class ContactsApp {
         Path contactPath = Paths.get("contacts.txt");
         try {
             List<String> contactListAll = Files.readAllLines(contactPath);
+            System.out.printf("%-20s | %-17s |\n------------------------------------------\n", "Name", "Phone Number");
             for (int i = 0; i < contactListAll.size(); i += 1) {
-                System.out.println((i + 1) + ": " + contactListAll.get(i));
+                String[] contactArr = contactListAll.get(i).split(" \\| ", 2);
+                System.out.printf("%d: %-17s | %-17s |\n", i + 1, contactArr[0], contactArr[1]);
             }
             System.out.println("Please enter integer: ");
             Input userInput = new Input();
