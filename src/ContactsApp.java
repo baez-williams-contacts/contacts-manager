@@ -97,25 +97,6 @@ public class ContactsApp extends Contact{
                 }
             }
         }
-//        List<String> newContactsStr = new ArrayList<>();
-//        for (Contact contact : contactObj) {
-//            if (contact.getName().equalsIgnoreCase(nameInput)) {
-//                System.out.println("There is already a contact named " + nameInput + ". Do you want to overwrite it? yes/no");
-//                boolean overwriteContact = userInput.yesNo();
-//                if (overwriteContact) {
-//                    newContactsStr.add(contactFormat);
-//                } else {
-//                    addContact();
-//                }
-//                continue;
-//            }
-//            newContactsStr.add(contact.getName() + " | " + contact.getPhoneNumber());
-//        }
-//        try {
-//            Files.write(Paths.get("contacts.txt"), newContactsStr);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     public static void deleteContact() {
