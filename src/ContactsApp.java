@@ -3,12 +3,28 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ContactsApp {
+public class ContactsApp extends Contact{
     public static void main(String[] args) {
         doContacts();
+    }
+
+    public static List<String> contactStrings() {
+        Path contactPath = Paths.get("contacts.txt");
+        List<String> contactStrings = new ArrayList<>();
+        try {
+            contactStrings = Files.readAllLines(contactPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return contactStrings;
+    }
+
+    public static List<Contact> contactObj(List<String> strings) {
+        return nameStringsToContacts(strings);
     }
 
     public static int userChoice() {
@@ -23,88 +39,71 @@ public class ContactsApp {
     }
 
     public static void viewAll() {
-        Path contactPath = Paths.get("contacts.txt");
-        try {
-            List<String> contactListAll = Files.readAllLines(contactPath);
-            System.out.printf("%-17s | %-17s |\n---------------------------------------\n", "Name", "Phone Number");
-            for (int i = 0; i < contactListAll.size(); i++) {
-                String[] contactArr = contactListAll.get(i).split(" \\| ", 2);
-                System.out.printf("%-17s | %-17s |\n", contactArr[0], contactArr[1]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        List<Contact> contacts = contactObj(contactStrings());
+        System.out.printf("%-20s | %-17s |\n------------------------------------------\n", "Name", "Phone Number");
+        for (int i = 0; i < contacts.size(); i++) {
+            System.out.printf("%d: %-17s | %-17s |\n", i + 1, contacts.get(i).getName(), contacts.get(i).getPhoneNumber());
         }
-
     }
 
     public static void addContact(){
         System.out.println("Please enter contact full name: ");
         Input userInput = new Input();
         String nameInput = userInput.getString();
-        System.out.println("Please enter contact phone number(no dashes): ");
+        System.out.println("Please enter contact phone number (no dashes): ");
         String numberInput = userInput.getString();
         String contactFormat = nameInput + " | " + numberInput;
-        Path contactPath = Paths.get("contacts.txt");
-        try {
-            List<String> contactListAll = Files.readAllLines(contactPath);
-            for (int i = 0; i < contactListAll.size(); i++){
-                String[] contactArr = contactListAll.get(i).split(" \\| ", 2);
-                if (nameInput.equalsIgnoreCase(contactArr[0])) {
-                    System.out.println("There is already a contact named " + nameInput + ". Do you want to overwrite it? yes/no");
-                    boolean overwriteContact = userInput.yesNo();
-                    if (overwriteContact){
-                        contactListAll.set(i, contactFormat);
-                        Files.write(contactPath, contactListAll);
-                        break;
+        List<Contact> contactObj = contactObj(contactStrings());
+        List<String> contactsStr = contactStrings();
+        Path contactsFile = Paths.get("contacts.txt");
+        for (int i = 0; i < contactObj.size(); i++){
+            if (nameInput.equalsIgnoreCase(contactObj.get(i).getName())) {
+                System.out.println("There is already a contact named " + nameInput + ". Do you want to overwrite it? yes/no");
+                boolean overwriteContact = userInput.yesNo();
+                if (overwriteContact){
+                    contactsStr.set(i, contactFormat);
+                    try {
+                        Files.write(contactsFile, contactsStr);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } else if (!contactListAll.get(i).equalsIgnoreCase(contactFormat)){
-                    Files.write(contactPath, Arrays.asList(contactFormat), StandardOpenOption.APPEND);
+                    break;
+                }
+            } else if (!contactObj.get(i).getName().equalsIgnoreCase(nameInput)){
+                try {
+                    Files.write(contactsFile, Arrays.asList(contactFormat), StandardOpenOption.APPEND);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-
-        }catch(IOException e){
-            e.printStackTrace();
         }
     }
 
     public static void deleteContact() {
-        Path contactPath = Paths.get("contacts.txt");
+        List<String> contactStr = contactStrings();
+        Path contactsFile = Paths.get("contacts.txt");
+        viewAll();
+        System.out.println("Please enter integer: ");
+        Input userInput = new Input();
+        int numberInput = userInput.getInt();
+        System.out.println("Contact: " + contactStr.get(numberInput - 1) + " has been deleted");
+        contactStr.remove(numberInput - 1);
         try {
-            List<String> contactListAll = Files.readAllLines(contactPath);
-            System.out.printf("%-20s | %-17s |\n------------------------------------------\n", "Name", "Phone Number");
-            for (int i = 0; i < contactListAll.size(); i += 1) {
-                String[] contactArr = contactListAll.get(i).split(" \\| ", 2);
-                System.out.printf("%d: %-17s | %-17s |\n", i + 1, contactArr[0], contactArr[1]);
-            }
-            System.out.println("Please enter integer: ");
-            Input userInput = new Input();
-            int numberInput = userInput.getInt();
-
-            System.out.println("Contact: " + contactListAll.get(numberInput - 1) + " has been deleted");
-            contactListAll.remove(numberInput -1);
-            Files.write(contactPath, contactListAll);
-
+            Files.write(contactsFile, contactStr);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void searchContact() {
         Input userInput = new Input();
-        Path contactPath = Paths.get("contacts.txt");
         System.out.println("Please enter the name of the contact you'd like to search for:");
         String searchInput = userInput.getString();
-        List<String> contactListAll = null;
-        try {
-            contactListAll = Files.readAllLines(contactPath);
-            for (String s : contactListAll) {
-                if (s.toUpperCase().startsWith(searchInput.toUpperCase())) {
-                    System.out.println("Here's the contact you searched for: " + s);
-                }
+        List<String> contactStr = contactStrings();
+        for (String s : contactStr) {
+            if (s.toUpperCase().startsWith(searchInput.toUpperCase())) {
+                System.out.println("Here's the contact you searched for: " + s);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -131,5 +130,6 @@ public class ContactsApp {
                 break;
             }
         } while (yesNo());
+        System.out.println("Thanks for using the app.");
     }
 }
