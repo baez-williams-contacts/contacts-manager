@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Input {
 
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public Input() {
         this.scanner = new Scanner(System.in);
@@ -14,7 +14,14 @@ public class Input {
 
     public boolean yesNo() {
         String userInput = scanner.next();
-        return userInput.equalsIgnoreCase("yes") || userInput.equalsIgnoreCase("y");
+        if (userInput.equalsIgnoreCase("yes") || userInput.equalsIgnoreCase("y")) {
+            return true;
+        } else if (userInput.equalsIgnoreCase("no") || userInput.equalsIgnoreCase("n")) {
+            return false;
+        } else {
+            System.out.println("Please enter yes/no.");
+            return yesNo();
+        }
     }
 
     public int getInt() {
