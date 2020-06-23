@@ -23,10 +23,6 @@ public class ContactsApp extends Contact{
         return contactStrings;
     }
 
-    public static List<Contact> contactObj(List<String> strings) {
-        return nameStringsToContacts(strings);
-    }
-
     public static int userChoice() {
         Input userInput = new Input();
         System.out.println("Please select one of the following options:\n" +
@@ -39,10 +35,25 @@ public class ContactsApp extends Contact{
     }
 
     public static void viewAll() {
-        List<Contact> contacts = contactObj(contactStrings());
+        List<Contact> contacts = nameStringsToContacts(contactStrings());
         System.out.printf("%-20s | %-17s |\n------------------------------------------\n", "Name", "Phone Number");
         for (int i = 0; i < contacts.size(); i++) {
             System.out.printf("%d: %-17s | %-17s |\n", i + 1, contacts.get(i).getName(), contacts.get(i).getPhoneNumber());
+        }
+    }
+
+    public static void removeDuplicates(List<String> strings) {
+        List<Contact> contacts = nameStringsToContacts(strings);
+        List<String> updatedString = contactStrings();
+        for (Contact contact : contacts) {
+            if (!updatedString.contains(contact.getName().toLowerCase())) {
+                updatedString.add(contact.getName().toLowerCase() + " | " + contact.getPhoneNumber());
+            }
+        }
+        try {
+            Files.write(Paths.get("contacts.txt"), updatedString);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -53,30 +64,58 @@ public class ContactsApp extends Contact{
         System.out.println("Please enter contact phone number (no dashes): ");
         String numberInput = userInput.getString();
         String contactFormat = nameInput + " | " + numberInput;
-        List<Contact> contactObj = contactObj(contactStrings());
+        List<Contact> contactObj = nameStringsToContacts(contactStrings());
         List<String> contactsStr = contactStrings();
-        Path contactsFile = Paths.get("contacts.txt");
-        for (int i = 0; i < contactObj.size(); i++){
+        try {
+            Files.write(
+                    Paths.get("contacts.txt"),
+                    Arrays.asList(contactFormat),
+                    StandardOpenOption.APPEND
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < contactObj.size(); i++) {
             if (nameInput.equalsIgnoreCase(contactObj.get(i).getName())) {
                 System.out.println("There is already a contact named " + nameInput + ". Do you want to overwrite it? yes/no");
                 boolean overwriteContact = userInput.yesNo();
-                if (overwriteContact){
+                if (overwriteContact) {
                     contactsStr.set(i, contactFormat);
                     try {
-                        Files.write(contactsFile, contactsStr);
+                        Files.write(Paths.get("contacts.txt"), contactsStr);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    break;
-                }
-            } else if (!contactObj.get(i).getName().equalsIgnoreCase(nameInput)){
-                try {
-                    Files.write(contactsFile, Arrays.asList(contactFormat), StandardOpenOption.APPEND);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } else {
+                    contactsStr.remove(contactFormat);
+                    try {
+                        Files.write(Paths.get("contacts.txt"), contactsStr);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    addContact();
                 }
             }
         }
+//        List<String> newContactsStr = new ArrayList<>();
+//        for (Contact contact : contactObj) {
+//            if (contact.getName().equalsIgnoreCase(nameInput)) {
+//                System.out.println("There is already a contact named " + nameInput + ". Do you want to overwrite it? yes/no");
+//                boolean overwriteContact = userInput.yesNo();
+//                if (overwriteContact) {
+//                    newContactsStr.add(contactFormat);
+//                } else {
+//                    addContact();
+//                }
+//                continue;
+//            }
+//            newContactsStr.add(contact.getName() + " | " + contact.getPhoneNumber());
+//        }
+//        try {
+//            Files.write(Paths.get("contacts.txt"), newContactsStr);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static void deleteContact() {
