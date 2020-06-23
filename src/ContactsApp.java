@@ -27,8 +27,8 @@ public class ContactsApp {
         try {
             List<String> contactListAll = Files.readAllLines(contactPath);
             System.out.printf("%-17s | %-17s |\n---------------------------------------\n", "Name", "Phone Number");
-            for (String contact : contactListAll) {
-                String[] contactArr = contact.split(" \\| ", 2);
+            for (int i = 0; i < contactListAll.size(); i++) {
+                String[] contactArr = contactListAll.get(i).split(" \\| ", 2);
                 System.out.printf("%-17s | %-17s |\n", contactArr[0], contactArr[1]);
             }
         } catch (IOException e) {
@@ -43,11 +43,27 @@ public class ContactsApp {
         String nameInput = userInput.getString();
         System.out.println("Please enter contact phone number(no dashes): ");
         String numberInput = userInput.getString();
-
         String contactFormat = nameInput + " | " + numberInput;
         Path contactPath = Paths.get("contacts.txt");
         try {
+            List<String> contactListAll = Files.readAllLines(contactPath);
+            for (int i = 0; i < contactListAll.size(); i++){
+                String[] contactArr = contactListAll.get(i).split(" \\| ", 2);
+                if (nameInput.equalsIgnoreCase(contactArr[0])) {
+
+                    System.out.println("There is already a contact named " + nameInput + ". Do you want to overwrite it? yes/no");
+                    boolean overwriteContact = userInput.yesNo();
+                    if (overwriteContact){
+                        contactListAll.set(i, contactFormat);
+                        Files.write(contactPath, contactListAll);
+                        break;
+                    }
+                } else {
             Files.write(contactPath, Arrays.asList(contactFormat), StandardOpenOption.APPEND);
+                break;
+                }
+            }
+
         }catch(IOException e){
             e.printStackTrace();
         }
