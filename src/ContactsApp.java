@@ -10,6 +10,7 @@ import java.util.List;
 public class ContactsApp extends Contact{
     public static void main(String[] args) {
         doContacts();
+//        viewAll();
     }
 
     public static List<String> contactStrings() {
@@ -39,21 +40,6 @@ public class ContactsApp extends Contact{
         System.out.printf("%-20s | %-17s |\n------------------------------------------\n", "Name", "Phone Number");
         for (int i = 0; i < contacts.size(); i++) {
             System.out.printf("%d: %-17s | %-17s |\n", i + 1, contacts.get(i).getName(), contacts.get(i).getPhoneNumber());
-        }
-    }
-
-    public static void removeDuplicates(List<String> strings) {
-        List<Contact> contacts = nameStringsToContacts(strings);
-        List<String> updatedString = contactStrings();
-        for (Contact contact : contacts) {
-            if (!updatedString.contains(contact.getName().toLowerCase())) {
-                updatedString.add(contact.getName().toLowerCase() + " | " + contact.getPhoneNumber());
-            }
-        }
-        try {
-            Files.write(Paths.get("contacts.txt"), updatedString);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

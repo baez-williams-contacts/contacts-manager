@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Contact {
     private String name;
-    private String phoneNumber;
+    private int phoneNumber;
 
     public String getName() {
         return name;
@@ -13,17 +13,17 @@ public class Contact {
         this.name = name;
     }
 
-    public String getPhoneNumber() {
+    public int getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(int phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
     public Contact(){};
 
-    public Contact(String name, String phoneNumber) {
+    public Contact(String name, int phoneNumber) {
         this.name = name;
         this.phoneNumber = phoneNumber;
     }
@@ -41,7 +41,8 @@ public class Contact {
         List<Contact> contactObj = new ArrayList<>();
         for (String contact : contactInfo) {
             String[] contactArr = contact.split(" \\| ", 2);
-            contactObj.add(new Contact(contactArr[0], contactArr[1]));
+            System.out.println(contactArr);
+            contactObj.add(new Contact(contactArr[0], Integer.parseInt(contactArr[1])));
         }
         return contactObj;
     }
