@@ -41,7 +41,6 @@ public class Contact {
         List<Contact> contactObj = new ArrayList<>();
         for (String contact : contactInfo) {
             String[] contactArr = contact.split(" \\| ", 2);
-            System.out.println(contactArr);
             contactObj.add(new Contact(contactArr[0], Integer.parseInt(contactArr[1])));
         }
         return contactObj;
