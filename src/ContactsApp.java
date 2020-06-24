@@ -10,7 +10,6 @@ import java.util.List;
 public class ContactsApp extends Contact{
     public static void main(String[] args) {
         doContacts();
-//        viewAll();
     }
 
     public static List<String> contactStrings() {
@@ -136,6 +135,5 @@ public class ContactsApp extends Contact{
                 break;
             }
         } while (yesNo());
-        System.out.println("Thanks for using the app.");
     }
 }
